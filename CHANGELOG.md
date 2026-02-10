@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0] - 2026-02-10
+
+### Added
+- Novo argumento `formato` em `anova_fatorial_qm_tabela()` com três opções de saída.
+- `qm_star`: quadrado médio com asteriscos de significância (padrão).
+- `f_p_colunas`: duas colunas por variável resposta (`F` e `p`).
+- `f_p_inline`: uma coluna por variável no formato `F (p)`.
+- Cabeçalhos e nota de rodapé dinâmicos conforme o formato selecionado.
+- Formatação consistente de p-valor, incluindo limiar mínimo (`< 0.0001`).
+
 ## [0.1.0] - 2026-02-04
 
 ### Added
