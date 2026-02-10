@@ -138,7 +138,7 @@ suportando delineamentos inteiramente casualizados (DIC) e blocos casualizados (
 ## Funcionalidades
 
 - Ajuste automático de modelos fatoriais
-- ANOVA com quadrados médios e significância
+- ANOVA com seleção de formato de saída (`QM*`, `F + p`, ou `F (p)`)
 - Testes de comparação de médias (t ou Tukey)
 - Médias ajustadas com erro-padrão e letras (CLD)
 - Desdobramento estatístico de interações fatoriais
@@ -244,7 +244,8 @@ anova_fatorial_qm_tabela(
   dados     = dados,
   variaveis = c("ci", "gs", "mvr"),
   bloco     = "bloco",
-  fatores   = c("dose", "hid")
+  fatores   = c("dose", "hid"),
+  formato   = "qm_star" # "qm_star", "f_p_colunas", "f_p_inline"
 )
 ```
 
