@@ -35,6 +35,18 @@ sig_star <- function(p) {
 }
 
 # ---------------------------------------------------------
+# Formatação de p-valor
+# ---------------------------------------------------------
+formata_p_valor <- function(p, digitos = 4) {
+  if (is.na(p)) return("")
+  if (p < 10^(-digitos)) {
+    paste0("< ", formatC(10^(-digitos), digits = digitos, format = "f"))
+  } else {
+    formatC(p, digits = digitos, format = "f")
+  }
+}
+
+# ---------------------------------------------------------
 # Pintar células com significância (kable)
 # ---------------------------------------------------------
 pinta_se_signif <- function(x) {
@@ -117,7 +129,8 @@ anova_fatorial_qm_tabela <- function(
     fatores,
     dic_vars = NULL,
     label_type = c("label", "sigla", "var"),
-    caption = "Resumo da análise de variância (Quadrados Médios).",
+    formato = c("qm_star", "f_p_colunas", "f_p_inline"),
+    caption = "Resumo da análise de variância.",
     digitos = 4
 ) {
   stopifnot(
@@ -125,6 +138,7 @@ anova_fatorial_qm_tabela <- function(
     is.character(fatores)
   )
   label_type <- match.arg(label_type)
+  formato <- match.arg(formato)
   
   colunas_usadas <- c(bloco, fatores, variaveis)
   colunas_usadas <- colunas_usadas[!is.null(colunas_usadas)]
@@ -163,21 +177,48 @@ anova_fatorial_qm_tabela <- function(
     anova_tab <- summary(modelo)[[1]]
     
     qm <- anova_tab$`Mean Sq`
+    f  <- anova_tab$`F value`
     p  <- anova_tab$`Pr(>F)`
     
-    tabela[[v]] <- mapply(
-      function(qm_i, p_i) {
-        if (is.na(qm_i)) return("")
-        
-        texto <- paste0(
-          formatC(qm_i, digits = digitos, format = "f"),
-          ifelse(sig_star(p_i) == "", "", paste0(" ", sig_star(p_i)))
-        )
-        pinta_se_signif(texto)
-      },
-      qm,
-      p
-    )
+    if (formato == "qm_star") {
+      tabela[[v]] <- mapply(
+        function(qm_i, p_i) {
+          if (is.na(qm_i)) return("")
+          
+          texto <- paste0(
+            formatC(qm_i, digits = digitos, format = "f"),
+            ifelse(sig_star(p_i) == "", "", paste0(" ", sig_star(p_i)))
+          )
+          pinta_se_signif(texto)
+        },
+        qm,
+        p
+      )
+    }
+    
+    if (formato == "f_p_colunas") {
+      tabela[[paste0(v, "_F")]] <- ifelse(
+        is.na(f), "",
+        formatC(f, digits = digitos, format = "f")
+      )
+      tabela[[paste0(v, "_p")]] <- sapply(p, formata_p_valor, digitos = digitos)
+    }
+    
+    if (formato == "f_p_inline") {
+      tabela[[v]] <- mapply(
+        function(f_i, p_i) {
+          if (is.na(f_i)) return("")
+          paste0(
+            formatC(f_i, digits = digitos, format = "f"),
+            " (",
+            formata_p_valor(p_i, digitos = digitos),
+            ")"
+          )
+        },
+        f,
+        p
+      )
+    }
   }
   
   cv_valores <- sapply(variaveis, function(v) {
@@ -191,10 +232,16 @@ anova_fatorial_qm_tabela <- function(
     (sqrt(qm_erro) / media) * 100
   })
   
-  tabela <- rbind(
-    tabela,
-    c("CV (%)", NA, sprintf("%.2f", cv_valores))
-  )
+  linha_cv <- c("CV (%)", NA)
+  
+  if (formato == "f_p_colunas") {
+    cv_expandido <- as.vector(rbind(sprintf("%.2f", cv_valores), rep("", length(cv_valores))))
+    linha_cv <- c(linha_cv, cv_expandido)
+  } else {
+    linha_cv <- c(linha_cv, sprintf("%.2f", cv_valores))
+  }
+  
+  tabela <- rbind(tabela, linha_cv)
   
   nomes_cols <- sapply(
     variaveis,
@@ -203,27 +250,43 @@ anova_fatorial_qm_tabela <- function(
     type = label_type
   )
   
-  colnames(tabela) <- c("FV", "GL", nomes_cols)
+  header_top <- NULL
+  nota_rodape <- NULL
   
-  tabela |>
+  if (formato == "f_p_colunas") {
+    colnames(tabela) <- c("FV", "GL", rep(c("F", "p"), length(variaveis)))
+    header_top <- c(" " = 2, setNames(rep(2, length(variaveis)), nomes_cols))
+    nota_rodape <- "F = valor do teste F; p = valor-p."
+  } else if (formato == "f_p_inline") {
+    colnames(tabela) <- c("FV", "GL", nomes_cols)
+    header_top <- c(" " = 2, "F (p)" = length(variaveis))
+    nota_rodape <- "F (p) = valor do teste F com valor-p entre parênteses."
+  } else {
+    colnames(tabela) <- c("FV", "GL", nomes_cols)
+    header_top <- c(" " = 2, "QM" = length(variaveis))
+    nota_rodape <- "QM = quadrado médio; * p < 0,05; ** p < 0,01; *** p < 0,001"
+  }
+  
+  tab_html <- tabela |>
     knitr::kable(
       caption = caption,
       escape  = FALSE,
       align   = "l",
       format  = "html"
-    ) |>
-    kableExtra::add_header_above(
-      c(" " = 2, "QM" = length(variaveis)),
-      align = "l"
-    ) |>
+    )
+  
+  tab_html <- tab_html |>
+    kableExtra::add_header_above(header_top, align = "l") |>
     kableExtra::kable_classic(
       bootstrap_options = "striped",
       full_width = FALSE
     ) |>
     kableExtra::footnote(
-      "QM = quadrado médio; * p < 0,05; ** p < 0,01; *** p < 0,001",
+      nota_rodape,
       general_title = ""
     )
+  
+  tab_html
 }
 
 
