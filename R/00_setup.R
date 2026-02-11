@@ -1,4 +1,4 @@
-﻿#' Configura opcoes globais recomendadas
+#' Configura opcoes globais recomendadas
 #'
 #' Define opcoes para nao converter strings automaticamente em fatores,
 #' evitar notacao cientifica e, opcionalmente, ajustar locale de datas.

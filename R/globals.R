@@ -1,8 +1,24 @@
-﻿utils::globalVariables(c(
+utils::globalVariables(c(
+  ".data",
   ".group",
+  "Homogeneidade",
+  "Normalidade",
+  "Variavel",
   "SE",
   "emmean",
+  "grupo",
+  "letra_col",
+  "letra_lin",
+  "media",
+  "media_fmt",
+  "media_grupo",
   "mean",
   "name",
-  "se"
+  "nivel",
+  "nivel_coluna",
+  "nivel_linha",
+  "p_homogeneidade",
+  "p_normalidade",
+  "se",
+  "variavel"
 ))

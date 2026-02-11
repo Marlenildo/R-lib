@@ -1,17 +1,17 @@
 # =========================================================
 # 05_funcoes_graficos.R
 #
-# Funções gráficas reutilizáveis para experimentos fatoriais
+# Funcoes graficas reutilizaveis para experimentos fatoriais
 #
-# PRINCÍPIO ARQUITETURAL:
-# - Este arquivo NÃO conhece variáveis experimentais
-# - Rótulos, siglas e unidades vêm do R_local (dic_vars)
-# - Todas as funções usam resolve_var_label()
+# PRINCIPIO ARQUITETURAL:
+# - Este arquivo NAO conhece variaveis experimentais
+# - Rotulos, siglas e unidades vem do R_local (dic_vars)
+# - Todas as funcoes usam resolve_var_label()
 #
-# Compatível com:
-# ✔️ DIC e DBC
-# ✔️ 1, 2 ou n fatores
-# ✔️ Relatórios HTML, PDF, Shiny
+# Compativel com:
+# ?? DIC e DBC
+# ?? 1, 2 ou n fatores
+# ?? Relatorios HTML, PDF, Shiny
 #
 # Depende de:
 # - ggplot2
@@ -24,10 +24,10 @@
 
 
 # =========================================================
-# 1️⃣ Gráfico simples: média ± erro-padrão
+# 1?? Grafico simples: media ? erro-padrao
 #
-# Usado quando os dados já estão resumidos (mean, se),
-# normalmente após summarise().
+# Usado quando os dados ja estao resumidos (mean, se),
+# normalmente apos summarise().
 # =========================================================
 #' Grafico de media e erro-padrao
 #'
@@ -51,7 +51,7 @@ grafico_media_ep <- function(
   
   label_type <- match.arg(label_type)
   
-  # Resolve rótulo da variável resposta
+  # Resolve rotulo da variavel resposta
   y_label <- resolve_var_label(
     variavel,
     dic_vars = dic_vars,
@@ -59,14 +59,14 @@ grafico_media_ep <- function(
   )
   
   ggplot2::ggplot(
-    dados |> dplyr::filter(name == variavel),
-    ggplot2::aes(x = {{ x_var }}, y = mean)
+    dados |> dplyr::filter(.data$name == variavel),
+    ggplot2::aes(x = {{ x_var }}, y = .data$mean)
   ) +
     ggplot2::geom_col(fill = "grey80", color = "black") +
     ggplot2::geom_errorbar(
       ggplot2::aes(
-        ymin = mean - se,
-        ymax = mean + se
+        ymin = .data$mean - .data$se,
+        ymax = .data$mean + .data$se
       ),
       width = 0.2
     ) +
@@ -80,9 +80,9 @@ grafico_media_ep <- function(
 
 
 # =========================================================
-# 2️⃣ Painel com múltiplas variáveis
+# 2?? Painel com multiplas variaveis
 #
-# Combina vários gráficos de média ± EP em um layout único
+# Combina varios graficos de media ? EP em um layout unico
 # =========================================================
 #' Painel com multiplas variaveis resposta
 #'
@@ -128,7 +128,7 @@ grafico_multiplas_variaveis <- function(
   
   n_graficos <- length(graficos)
   
-  # Definição automática do layout
+  # Definicao automatica do layout
   if (is.null(ncol) & is.null(nrow)) {
     ncol <- 2
     nrow <- ceiling(n_graficos / ncol)
@@ -148,7 +148,7 @@ grafico_multiplas_variaveis <- function(
 
 
 # =========================================================
-# 3️⃣ Gráfico de médias fatoriais com letras (CLD)
+# 3?? Grafico de medias fatoriais com letras (CLD)
 #
 # Usa o MESMO modelo da ANOVA
 # =========================================================
@@ -178,7 +178,7 @@ grafico_medias_fatorial <- function(
   
   label_type <- match.arg(label_type)
   
-  # Médias ajustadas + letras
+  # Medias ajustadas + letras
   res <- medias_fatorial_cld(
     dados           = dados,
     resposta        = resposta,
@@ -187,7 +187,7 @@ grafico_medias_fatorial <- function(
     fatores         = fatores
   )
   
-  # Rótulo semântico da variável resposta
+  # Rotulo semantico da variavel resposta
   y_label <- resolve_var_label(
     resposta,
     dic_vars = dic_vars,
@@ -196,18 +196,18 @@ grafico_medias_fatorial <- function(
   
   ggplot2::ggplot(
     res,
-    ggplot2::aes(x = nivel, y = media)
+    ggplot2::aes(x = .data$nivel, y = .data$media)
   ) +
     ggplot2::geom_col(fill = "grey80", color = "black") +
     ggplot2::geom_errorbar(
       ggplot2::aes(
-        ymin = media - se,
-        ymax = media + se
+        ymin = .data$media - .data$se,
+        ymax = .data$media + .data$se
       ),
       width = 0.2
     ) +
     ggplot2::geom_text(
-      ggplot2::aes(label = grupo),
+      ggplot2::aes(label = .data$grupo),
       vjust = -0.5,
       size = 5
     ) +
@@ -221,9 +221,9 @@ grafico_medias_fatorial <- function(
 
 
 # =========================================================
-# 4️⃣ Gráfico de interação fatorial
+# 4?? Grafico de interacao fatorial
 #
-# Representa médias ajustadas para dois fatores
+# Representa medias ajustadas para dois fatores
 # =========================================================
 #' Grafico de interacao para dois fatores
 #'
@@ -261,15 +261,15 @@ grafico_interacao_fatorial <- function(
     fatores  = fatores
   )
   
-  # Médias ajustadas
+  # Medias ajustadas
   em <- emmeans::emmeans(
     modelo,
-    as.formula(paste("~", fator_x, "*", fator_traco))
+    stats::as.formula(paste("~", fator_x, "*", fator_traco))
   )
   
   df <- as.data.frame(em)
   
-  # Rótulo da variável resposta
+  # Rotulo da variavel resposta
   y_label <- resolve_var_label(
     resposta,
     dic_vars = dic_vars,
@@ -289,8 +289,8 @@ grafico_interacao_fatorial <- function(
     ggplot2::geom_line() +
     ggplot2::geom_errorbar(
       ggplot2::aes(
-        ymin = emmean - SE,
-        ymax = emmean + SE
+        ymin = .data$emmean - .data$SE,
+        ymax = .data$emmean + .data$SE
       ),
       width = 0.15
     ) +

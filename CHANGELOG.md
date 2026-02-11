@@ -1,4 +1,11 @@
-﻿# Changelog
+# Changelog
+
+## [0.4.1] - 2026-02-11
+
+### Fixed
+- Ajustes de codificacao e documentacao para validacao formal de pacote.
+- Geracao de documentacao via roxygen2 com man/ e NAMESPACE consistentes.
+- Correcoes para R CMD check (namespace, NSE e portabilidade de codigo).
 
 ## [0.4.0] - 2026-02-11
 
@@ -41,3 +48,4 @@
 ### Notes
 - Codigo preparado para uso via `source()`
 - Pensado para integracao com R Markdown, Quarto e Shiny
+

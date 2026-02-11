@@ -1,6 +1,6 @@
 # =========================================================
 # 04_funcoes_tabelas.R
-# Funções para tabelas
+# Funcoes para tabelas
 # =========================================================
 
 #' Cria tabela interativa exportavel via DataTables
@@ -12,9 +12,9 @@
 #' @export
 tabela_dt_exportavel <- function(
     dados,
-    titulo = "Visualização dos dados"
+    titulo = "Visualizacao dos dados"
 ) {
-  
+
   DT::datatable(
     dados,
     rownames = FALSE,

@@ -1,30 +1,30 @@
 # =========================================================
 # 06_funcoes_modelo_fatorial_medias.R
 #
-# Conjunto de funções genéricas para:
+# Conjunto de funA?A?es genACricas para:
 # - Ajuste de modelos fatoriais (DIC ou DBC)
-# - Análise de variância (ANOVA)
-# - Testes de comparação de médias
+# - AnA!lise de variAcncia (ANOVA)
+# - Testes de comparaA?A?o de mACdias
 #
-# PRINCÍPIO ARQUITETURAL:
-# - Este arquivo NÃO conhece variáveis experimentais
-# - Nomes, siglas e unidades são definidos no R_local
-# - A biblioteca apenas CONSOME um dicionário opcional
+# PRINCA?PIO ARQUITETURAL:
+# - Este arquivo NAfO conhece variA!veis experimentais
+# - Nomes, siglas e unidades sA?o definidos no R_local
+# - A biblioteca apenas CONSOME um dicionA!rio opcional
 #
-# ✔️ Aceita 1 ou mais fatores
-# ✔️ Aceita DIC (sem bloco) ou DBC (com bloco)
-# ✔️ Funciona para qualquer banco de dados
+# ao"i,? Aceita 1 ou mais fatores
+# ao"i,? Aceita DIC (sem bloco) ou DBC (com bloco)
+# ao"i,? Funciona para qualquer banco de dados
 #
 # Autor: Marlenildo Ferreira Melo
 # =========================================================
 
 
 # =========================================================
-# FUNÇÕES AUXILIARES GERAIS
+# FUNA?A.ES AUXILIARES GERAIS
 # =========================================================
 
 # ---------------------------------------------------------
-# Símbolos de significância estatística
+# SA-mbolos de significAcncia estatA-stica
 # ---------------------------------------------------------
 #' @keywords internal
 #' @noRd
@@ -37,7 +37,7 @@ sig_star <- function(p) {
 }
 
 # ---------------------------------------------------------
-# Formatação de p-valor
+# FormataA?A?o de p-valor
 # ---------------------------------------------------------
 #' @keywords internal
 #' @noRd
@@ -51,7 +51,7 @@ formata_p_valor <- function(p, digitos = 4) {
 }
 
 # ---------------------------------------------------------
-# Pintar células com significância (kable)
+# Pintar cAClulas com significAcncia (kable)
 # ---------------------------------------------------------
 #' @keywords internal
 #' @noRd
@@ -68,10 +68,10 @@ pinta_se_signif <- function(x) {
 }
 
 # ---------------------------------------------------------
-# Resolver rótulo de variável via dicionário (GENÉRICO)
+# Resolver rA3tulo de variA!vel via dicionA!rio (GENA?RICO)
 #
-# - dic_vars é DEFINIDO NO R_local
-# - Estrutura mínima esperada:
+# - dic_vars AC DEFINIDO NO R_local
+# - Estrutura mA-nima esperada:
 #   tibble(var, label, sigla)
 # ---------------------------------------------------------
 #' Resolve rotulo de variavel por dicionario
@@ -89,13 +89,13 @@ resolve_var_label <- function(
 ) {
   type <- match.arg(type)
   
-  # Sem dicionário → fallback total
+  # Sem dicionA!rio a?' fallback total
   if (is.null(dic_vars)) return(var)
   
-  # Verificação mínima de contrato
+  # VerificaA?A?o mA-nima de contrato
   stopifnot(all(c("var", "label", "sigla") %in% names(dic_vars)))
   
-  # Variável fora do dicionário → fallback
+  # VariA!vel fora do dicionA!rio a?' fallback
   if (!var %in% dic_vars$var) return(var)
   
   linha <- dic_vars[dic_vars$var == var, , drop = FALSE]
@@ -108,7 +108,7 @@ resolve_var_label <- function(
 
 
 # =========================================================
-# 1️⃣ Ajuste genérico do modelo fatorial
+# 1i,?af? Ajuste genACrico do modelo fatorial
 # =========================================================
 #' Ajusta modelo fatorial (DIC ou DBC)
 #'
@@ -138,12 +138,12 @@ ajusta_modelo_fatorial <- function(
     paste(resposta, "~", termo_fatores)
   }
   
-  aov(as.formula(formula_txt), data = dados)
+  stats::aov(stats::as.formula(formula_txt), data = dados)
 }
 
 
 # =========================================================
-# 2️⃣ Tabela de ANOVA fatorial (Quadrados Médios)
+# 2i,?af? Tabela de ANOVA fatorial (Quadrados MACdios)
 # =========================================================
 #' Gera tabela de ANOVA fatorial
 #'
@@ -167,7 +167,7 @@ anova_fatorial_qm_tabela <- function(
     dic_vars = NULL,
     label_type = c("label", "sigla", "var"),
     formato = c("qm_star", "f_p_colunas", "f_p_inline"),
-    caption = "Resumo da análise de variância.",
+    caption = "Resumo da anA!lise de variAcncia.",
     digitos = 4
 ) {
   stopifnot(
@@ -191,8 +191,8 @@ anova_fatorial_qm_tabela <- function(
     termo_fatores
   }
   
-  modelo_ref <- aov(
-    as.formula(paste(variaveis[1], "~", formula_base)),
+  modelo_ref <- stats::aov(
+    stats::as.formula(paste(variaveis[1], "~", formula_base)),
     data = dados_anova
   )
   
@@ -206,8 +206,8 @@ anova_fatorial_qm_tabela <- function(
   
   for (v in variaveis) {
     
-    modelo <- aov(
-      as.formula(paste(v, "~", formula_base)),
+    modelo <- stats::aov(
+      stats::as.formula(paste(v, "~", formula_base)),
       data = dados_anova
     )
     
@@ -259,12 +259,12 @@ anova_fatorial_qm_tabela <- function(
   }
   
   cv_valores <- sapply(variaveis, function(v) {
-    modelo <- aov(
-      as.formula(paste(v, "~", formula_base)),
+    modelo <- stats::aov(
+      stats::as.formula(paste(v, "~", formula_base)),
       data = dados_anova
     )
     anova_tab <- summary(modelo)[[1]]
-    qm_erro <- tail(anova_tab$`Mean Sq`, 1)
+    qm_erro <- utils::tail(anova_tab$`Mean Sq`, 1)
     media   <- mean(dados_anova[[v]], na.rm = TRUE)
     (sqrt(qm_erro) / media) * 100
   })
@@ -292,16 +292,16 @@ anova_fatorial_qm_tabela <- function(
   
   if (formato == "f_p_colunas") {
     colnames(tabela) <- c("FV", "GL", rep(c("F", "p"), length(variaveis)))
-    header_top <- c(" " = 2, setNames(rep(2, length(variaveis)), nomes_cols))
+    header_top <- c(" " = 2, stats::setNames(rep(2, length(variaveis)), nomes_cols))
     nota_rodape <- "F = valor do teste F; p = valor-p."
   } else if (formato == "f_p_inline") {
     colnames(tabela) <- c("FV", "GL", nomes_cols)
     header_top <- c(" " = 2, "F (p)" = length(variaveis))
-    nota_rodape <- "F (p) = valor do teste F com valor-p entre parênteses."
+    nota_rodape <- "F (p) = valor do teste F com valor-p entre parAanteses."
   } else {
     colnames(tabela) <- c("FV", "GL", nomes_cols)
     header_top <- c(" " = 2, "QM" = length(variaveis))
-    nota_rodape <- "QM = quadrado médio; * p < 0,05; ** p < 0,01; *** p < 0,001"
+    nota_rodape <- "QM = quadrado mACdio; * p < 0,05; ** p < 0,01; *** p < 0,001"
   }
   
   tab_html <- tabela |>
@@ -328,7 +328,7 @@ anova_fatorial_qm_tabela <- function(
 
 
 # =========================================================
-# 3️⃣ Escolha automática do teste de médias
+# 3i,?af? Escolha automA!tica do teste de mACdias
 # =========================================================
 #' @keywords internal
 #' @noRd
@@ -339,7 +339,7 @@ escolhe_teste_medias <- function(dados, fator) {
 
 
 # =========================================================
-# 4️⃣ Erros-padrão descritivos (simples e interação)
+# 4i,?af? Erros-padrA?o descritivos (simples e interaA?A?o)
 # =========================================================
 #' @keywords internal
 #' @noRd
@@ -379,7 +379,7 @@ se_descritivo_interacao <- function(
 
 
 # =========================================================
-# 5️⃣ Médias ajustadas + CLD
+# 5i,?af? MACdias ajustadas + CLD
 # =========================================================
 #' Calcula medias ajustadas e grupos de comparacao
 #'
@@ -412,7 +412,7 @@ medias_fatorial_cld <- function(
   
   em <- emmeans::emmeans(
     modelo,
-    as.formula(paste("~", fator_interesse))
+    stats::as.formula(paste("~", fator_interesse))
   )
   
   letras <- multcomp::cld(
@@ -443,7 +443,7 @@ medias_fatorial_cld <- function(
 
 
 # =========================================================
-# 6️⃣ Tabela final de médias fatoriais
+# 6i,?af? Tabela final de mACdias fatoriais
 # =========================================================
 #' Monta tabela de medias fatoriais
 #'
@@ -468,7 +468,7 @@ tabela_medias_fatorial <- function(
     fatores,
     dic_vars = NULL,
     label_type = c("label", "sigla", "var"),
-    caption = "Médias ajustadas ± erro-padrão.",
+    caption = "MACdias ajustadas A? erro-padrA?o.",
     digitos = 2,
     tipo_se = c("modelo", "descritivo")
 ) {
@@ -492,7 +492,7 @@ tabela_medias_fatorial <- function(
           variavel = nome_var,
           media_grupo = paste0(
             round(media, digitos),
-            " ± ",
+            " A? ",
             round(se, digitos),
             " ",
             grupo
@@ -517,9 +517,9 @@ tabela_medias_fatorial <- function(
 
 
 # ---------------------------------------------------------
-# 7️⃣ Tabela de desdobramento da interação fatorial
+# 7i,?af? Tabela de desdobramento da interaA?A?o fatorial
 #
-# Suporta dicionário externo para rotulagem da variável
+# Suporta dicionA!rio externo para rotulagem da variA!vel
 # resposta, definido no R_local.
 # ---------------------------------------------------------
 #' Tabela de desdobramento da interacao fatorial
@@ -549,7 +549,7 @@ tabela_interacao_fatorial <- function(
     label_type = c("label", "sigla", "var"),
     digitos = 2,
     alpha = 0.05,
-    caption = "Desdobramento da interação fatorial."
+    caption = "Desdobramento da interaA?A?o fatorial."
 ) {
   
   stopifnot(
@@ -561,7 +561,7 @@ tabela_interacao_fatorial <- function(
   
   label_type <- match.arg(label_type)
   
-  # Nome da variável resposta (semântico)
+  # Nome da variA!vel resposta (semAcntico)
   nome_var <- resolve_var_label(
     resposta,
     dic_vars = dic_vars,
@@ -577,13 +577,13 @@ tabela_interacao_fatorial <- function(
   )
   
   # =================================================
-  # 1️⃣ COLUNAS → letras MAIÚSCULAS
+  # 1i,?af? COLUNAS a?' letras MAIAsSCULAS
   # =================================================
   teste_col <- escolhe_teste_medias(dados, fator_coluna)
   
   em_col <- emmeans::emmeans(
     modelo,
-    as.formula(paste("~", fator_coluna, "|", fator_linha))
+    stats::as.formula(paste("~", fator_coluna, "|", fator_linha))
   )
   
   col_cld <- multcomp::cld(
@@ -600,13 +600,13 @@ tabela_interacao_fatorial <- function(
     )
   
   # =================================================
-  # 2️⃣ LINHAS → letras minúsculas
+  # 2i,?af? LINHAS a?' letras minAosculas
   # =================================================
   teste_lin <- escolhe_teste_medias(dados, fator_linha)
   
   em_lin <- emmeans::emmeans(
     modelo,
-    as.formula(paste("~", fator_linha, "|", fator_coluna))
+    stats::as.formula(paste("~", fator_linha, "|", fator_coluna))
   )
   
   lin_cld <- multcomp::cld(
@@ -623,7 +623,7 @@ tabela_interacao_fatorial <- function(
     )
   
   # =================================================
-  # 3️⃣ Combinação final
+  # 3i,?af? CombinaA?A?o final
   # =================================================
   tabela_final <- col_cld |>
     dplyr::left_join(
@@ -633,23 +633,20 @@ tabela_interacao_fatorial <- function(
     ) |>
     dplyr::mutate(
       media_fmt = paste0(
-        round(emmean, digitos), " ",
-        letra_lin, letra_col
+        round(.data$emmean, digitos), " ",
+        .data$letra_lin, .data$letra_col
       )
     ) |>
-    dplyr::select(
-      !!fator_linha  := nivel_linha,
-      !!fator_coluna := nivel_coluna,
-      media_fmt
-    ) |>
+    dplyr::select(nivel_linha, nivel_coluna, media_fmt) |>
+    stats::setNames(c(fator_linha, fator_coluna, "media_fmt")) |>
     tidyr::pivot_wider(
-      names_from  = !!rlang::sym(fator_coluna),
-      values_from = media_fmt
+      names_from  = dplyr::all_of(fator_coluna),
+      values_from = .data$media_fmt
     )
   
   knitr::kable(
     tabela_final,
-    caption = paste(nome_var, "—", caption),
+    caption = paste(nome_var, "-", caption),
     escape  = FALSE
   ) |>
     kableExtra::kable_classic(
@@ -658,17 +655,17 @@ tabela_interacao_fatorial <- function(
     ) |>
     kableExtra::footnote(
       general_title = "",
-      "Letras maiúsculas comparam médias na coluna e letras minúsculas comparam médias na linha.
-       Teste t (2 níveis) ou Tukey (≥ 3 níveis), p < 0,05."
+      "Letras maiusculas comparam medias na coluna e letras minusculas comparam medias na linha.
+       Teste t (2 niveis) ou Tukey (>= 3 niveis), p < 0,05."
     )
 }
 
 
 # ---------------------------------------------------------
-# 8️⃣ Desdobramento da interação fatorial
-#    para múltiplas variáveis resposta
+# 8i,?af? Desdobramento da interaA?A?o fatorial
+#    para mAoltiplas variA!veis resposta
 #
-# Totalmente compatível com dicionário externo
+# Totalmente compatA-vel com dicionA!rio externo
 # ---------------------------------------------------------
 #' Desdobra interacao fatorial para varias respostas
 #'
@@ -699,7 +696,7 @@ tabela_interacao_fatorial_multivariaveis <- function(
     digitos = 2,
     alpha = 0.05,
     tipo_se = c("modelo", "descritivo"),
-    caption = "Desdobramento da interação fatorial."
+    caption = "Desdobramento da interaA?A?o fatorial."
 ) {
   
   stopifnot(
@@ -733,7 +730,7 @@ tabela_interacao_fatorial_multivariaveis <- function(
       teste_col <- escolhe_teste_medias(dados, fator_coluna)
       em_col <- emmeans::emmeans(
         modelo,
-        as.formula(paste("~", fator_coluna, "|", fator_linha))
+        stats::as.formula(paste("~", fator_coluna, "|", fator_linha))
       )
       
       col_cld <- multcomp::cld(
@@ -753,7 +750,7 @@ tabela_interacao_fatorial_multivariaveis <- function(
       teste_lin <- escolhe_teste_medias(dados, fator_linha)
       em_lin <- emmeans::emmeans(
         modelo,
-        as.formula(paste("~", fator_linha, "|", fator_coluna))
+        stats::as.formula(paste("~", fator_linha, "|", fator_coluna))
       )
       
       lin_cld <- multcomp::cld(
@@ -794,24 +791,20 @@ tabela_interacao_fatorial_multivariaveis <- function(
         dplyr::mutate(
           Variavel = nome_var,
           media_fmt = paste0(
-            round(emmean, digitos), " ± ",
-            round(SE, digitos), " ",
-            letra_lin, letra_col
+            round(.data$emmean, digitos), " +/- ",
+            round(.data$SE, digitos), " ",
+            .data$letra_lin, .data$letra_col
           )
         ) |>
-        dplyr::select(
-          Variavel,
-          !!fator_linha  := nivel_linha,
-          !!fator_coluna := nivel_coluna,
-          media_fmt
-        )
+        dplyr::select(Variavel, nivel_linha, nivel_coluna, media_fmt) |>
+        stats::setNames(c("Variavel", fator_linha, fator_coluna, "media_fmt"))
     }
   )
   
   resultado |>
     tidyr::pivot_wider(
-      names_from  = !!rlang::sym(fator_coluna),
-      values_from = media_fmt
+      names_from  = dplyr::all_of(fator_coluna),
+      values_from = .data$media_fmt
     ) |>
     knitr::kable(
       caption = caption,
@@ -822,3 +815,4 @@ tabela_interacao_fatorial_multivariaveis <- function(
       full_width = FALSE
     )
 }
+
