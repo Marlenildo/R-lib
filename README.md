@@ -1,10 +1,10 @@
-﻿# rlibfatorial
+﻿# ranova
 
 Pacote R para analise de experimentos fatoriais em DIC e DBC.
 
 ## Visao geral
 
-O `rlibfatorial` organiza um fluxo unico para:
+O `ranova` organiza um fluxo unico para:
 
 - ajuste de modelo fatorial
 - ANOVA para uma ou varias respostas
@@ -25,13 +25,13 @@ Escopo atual:
 
 ```r
 install.packages("remotes")
-remotes::install_github("Marlenildo/R-lib")
+remotes::install_github("Marlenildo/ranova")
 ```
 
 ### Local (tar.gz)
 
 ```r
-install.packages("rlibfatorial_0.4.1.tar.gz", repos = NULL, type = "source")
+install.packages("ranova_0.4.1.tar.gz", repos = NULL, type = "source")
 ```
 
 ### Desenvolvimento
@@ -51,7 +51,7 @@ devtools::load_all(".")
 ## Inicio rapido
 
 ```r
-library(rlibfatorial)
+library(ranova)
 
 # Opcional: ajustes globais de ambiente
 configurar_ambiente_rlib()
@@ -238,3 +238,5 @@ Marlenildo Ferreira Melo
 ## Licenca
 
 MIT (`LICENSE`).
+
+

@@ -1,4 +1,4 @@
-#' rlibfatorial: Analise de Experimentos Fatoriais
+#' ranova: Analise de Variancia para Experimentos
 #'
 #' Ferramentas para ajustar modelos fatoriais (DIC e DBC), gerar ANOVA,
 #' tabelas de medias, diagnostico de pressupostos e graficos para relatorios.
