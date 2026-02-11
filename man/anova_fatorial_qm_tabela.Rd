@@ -10,9 +10,9 @@ anova_fatorial_qm_tabela(
   bloco = NULL,
   fatores,
   dic_vars = NULL,
-  label_type = c("label", "sigla", "var"),
+  label_type = c("label", "sigla", "description", "var"),
   formato = c("qm_star", "f_p_colunas", "f_p_inline"),
-  caption = "Resumo da anA!lise de variAcncia.",
+  caption = "Resumo da análise de variância.",
   digitos = 4
 )
 }
@@ -25,7 +25,7 @@ anova_fatorial_qm_tabela(
 
 \item{fatores}{Vetor com nomes dos fatores.}
 
-\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{label}, \code{sigla}.}
+\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{sigla}, \code{label}, \code{description}.}
 
 \item{label_type}{Tipo de rotulo para variaveis resposta.}
 

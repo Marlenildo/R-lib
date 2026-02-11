@@ -1,4 +1,4 @@
-﻿# ranova
+# ranova
 
 Pacote R para analise de experimentos fatoriais em DIC e DBC.
 
@@ -165,14 +165,37 @@ Para usar rotulos amigaveis nas tabelas/graficos:
 
 ```r
 dic_vars <- tibble::tribble(
-  ~var, ~label, ~sigla,
-  "ci", "Conteudo de clorofila", "CI",
-  "gs", "Condutancia estomatica", "gs",
-  "mvr", "Massa verde da raiz", "MVR"
+  ~var,    ~sigla,    ~label,                                   ~description,
+  "ce",    "CE",      "CE (dS m⁻¹)",                            "Condutividade eletrica (dS m⁻¹)",
+  "as",    "AS",      "AS (mM)",                                "Acido salicilico (mM)",
+  "af",    "AF",      "AF (cm²)",                               "Area foliar (cm²)",
+  "cla",   "Cla",     "Cla (CFI)",                              "Clorofila a (CFI)",
+  "clb",   "Clb",     "Clb (CFI)",                              "Clorofila b (CFI)",
+  "clab",  "Cla/Clb", "Cla/Clb (CFI)",                          "Razao clorofila a/b (CFI)",
+  "clt",   "Clt",     "Clt (CFI)",                              "Clorofila total (CFI)",
+  "cpa",   "CPA",     "CPA (cm)",                               "Comprimento da parte aerea (cm)",
+  "cr",    "CR",      "CR (cm)",                                "Comprimento de raiz (cm)",
+  "cra",   "CRA",     "CRA (%)",                                "Conteudo relativo de agua (%)",
+  "ee",    "EE",      "EE (%)",                                 "Extravasamento de eletrolitos (%)",
+  "dns",   "DNS",     "DNS (mm)",                               "Diametro ao nivel do solo (mm)",
+  "f0",    "F₀",      "F₀",                                     "Fluorescencia inicial (F₀)",
+  "fm",    "Fm",      "Fm",                                     "Fluorescencia maxima (Fm)",
+  "fv_fm", "Fv/Fm",   "Fv/Fm",                                  "Eficiencia fotoquimica maxima (Fv/Fm)",
+  "iqd",   "IQD",     "IQD",                                    "Indice de qualidade de Dickson",
+  "msc",   "MSC",     "MSC (g)",                                "Massa seca do caule (g)",
+  "msf",   "MSF",     "MSF (g)",                                "Massa seca da folha (g)",
+  "msr",   "MSR",     "MSR (g)",                                "Massa seca da raiz (g)",
+  "mst",   "MST",     "MST (g)",                                "Massa seca total (g)",
+  "mspa",  "MSPA",    "MSPA (g)",                               "Massa seca da parte aerea (g)",
+  "nf",    "NF",      "NF",                                     "Numero de folhas",
+  "nff",   "NFF",     "NFF",                                    "Numero de foliolos",
+  "np",    "NP",      "NP",                                     "Numero de pinas",
+  "vr",    "VR",      "VR (cm³)",                               "Volume de raiz (cm³)"
 )
 ```
 
 Passe `dic_vars` e `label_type` nas funcoes que suportam isso.
+Opcoes de `label_type`: `"var"`, `"sigla"`, `"label"` ou `"description"`.
 
 ## API principal
 

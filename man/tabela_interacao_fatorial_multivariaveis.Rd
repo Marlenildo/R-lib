@@ -12,11 +12,11 @@ tabela_interacao_fatorial_multivariaveis(
   bloco = NULL,
   fatores,
   dic_vars = NULL,
-  label_type = c("label", "sigla", "var"),
+  label_type = c("label", "sigla", "description", "var"),
   digitos = 2,
   alpha = 0.05,
   tipo_se = c("modelo", "descritivo"),
-  caption = "Desdobramento da interaA?A?o fatorial."
+  caption = "Desdobramento da interação fatorial."
 )
 }
 \arguments{
@@ -32,7 +32,7 @@ tabela_interacao_fatorial_multivariaveis(
 
 \item{fatores}{Vetor com nomes dos fatores.}
 
-\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{label}, \code{sigla}.}
+\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{sigla}, \code{label}, \code{description}.}
 
 \item{label_type}{Tipo de rotulo para variavel resposta.}
 

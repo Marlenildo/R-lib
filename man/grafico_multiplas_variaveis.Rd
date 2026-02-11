@@ -10,7 +10,7 @@ grafico_multiplas_variaveis(
   x_var,
   x_label,
   dic_vars = NULL,
-  label_type = c("label", "sigla", "var"),
+  label_type = c("label", "sigla", "description", "var"),
   ncol = NULL,
   nrow = NULL,
   labels = TRUE
@@ -25,7 +25,7 @@ grafico_multiplas_variaveis(
 
 \item{x_label}{Rotulo do eixo x.}
 
-\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{label}, \code{sigla}.}
+\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{sigla}, \code{label}, \code{description}.}
 
 \item{label_type}{Tipo de rotulo da variavel resposta.}
 

@@ -4,12 +4,16 @@
 \alias{resolve_var_label}
 \title{Resolve rotulo de variavel por dicionario}
 \usage{
-resolve_var_label(var, dic_vars = NULL, type = c("label", "sigla", "var"))
+resolve_var_label(
+  var,
+  dic_vars = NULL,
+  type = c("label", "sigla", "description", "var")
+)
 }
 \arguments{
 \item{var}{Nome da variavel.}
 
-\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{label}, \code{sigla}.}
+\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{sigla}, \code{label}, \code{description}.}
 
 \item{type}{Tipo de rotulo retornado.}
 }

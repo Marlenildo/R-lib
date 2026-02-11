@@ -35,7 +35,7 @@
 #' @param variavel Nome da variavel resposta no campo `name`.
 #' @param x_var Variavel do eixo x.
 #' @param x_label Rotulo do eixo x.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo da variavel resposta.
 #'
 #' @return Objeto `ggplot2`.
@@ -46,7 +46,7 @@ grafico_media_ep <- function(
     x_var,
     x_label,
     dic_vars   = NULL,
-    label_type = c("label", "sigla", "var")
+    label_type = c("label", "sigla", "description", "var")
 ) {
   
   label_type <- match.arg(label_type)
@@ -90,7 +90,7 @@ grafico_media_ep <- function(
 #' @param variaveis Vetor com nomes das variaveis resposta.
 #' @param x_var Variavel do eixo x.
 #' @param x_label Rotulo do eixo x.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo da variavel resposta.
 #' @param ncol Numero de colunas no painel.
 #' @param nrow Numero de linhas no painel.
@@ -104,7 +104,7 @@ grafico_multiplas_variaveis <- function(
     x_var,
     x_label,
     dic_vars   = NULL,
-    label_type = c("label", "sigla", "var"),
+    label_type = c("label", "sigla", "description", "var"),
     ncol = NULL,
     nrow = NULL,
     labels = TRUE
@@ -159,7 +159,7 @@ grafico_multiplas_variaveis <- function(
 #' @param fator_interesse Nome do fator para comparacao de medias.
 #' @param bloco Nome do bloco (DBC). Use `NULL` para DIC.
 #' @param fatores Vetor de nomes dos fatores do modelo.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo da variavel resposta.
 #' @param digitos Numero de casas decimais.
 #'
@@ -172,7 +172,7 @@ grafico_medias_fatorial <- function(
     bloco = NULL,
     fatores,
     dic_vars   = NULL,
-    label_type = c("label", "sigla", "var"),
+    label_type = c("label", "sigla", "description", "var"),
     digitos = 2
 ) {
   
@@ -233,7 +233,7 @@ grafico_medias_fatorial <- function(
 #' @param fator_traco Fator representado por cor/linha.
 #' @param bloco Nome do bloco (DBC). Use `NULL` para DIC.
 #' @param fatores Vetor de nomes dos fatores do modelo.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo da variavel resposta.
 #' @param digitos Numero de casas decimais.
 #'
@@ -247,7 +247,7 @@ grafico_interacao_fatorial <- function(
     bloco = NULL,
     fatores,
     dic_vars   = NULL,
-    label_type = c("label", "sigla", "var"),
+    label_type = c("label", "sigla", "description", "var"),
     digitos = 2
 ) {
   
@@ -302,3 +302,4 @@ grafico_interacao_fatorial <- function(
     ggplot2::theme_bw() +
     ggplot2::theme(panel.grid = ggplot2::element_blank())
 }
+

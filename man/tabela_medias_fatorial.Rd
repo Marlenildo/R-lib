@@ -11,8 +11,8 @@ tabela_medias_fatorial(
   bloco = NULL,
   fatores,
   dic_vars = NULL,
-  label_type = c("label", "sigla", "var"),
-  caption = "MACdias ajustadas A? erro-padrA?o.",
+  label_type = c("label", "sigla", "description", "var"),
+  caption = "Médias ajustadas ± erro-padrão.",
   digitos = 2,
   tipo_se = c("modelo", "descritivo")
 )
@@ -28,7 +28,7 @@ tabela_medias_fatorial(
 
 \item{fatores}{Vetor com nomes dos fatores.}
 
-\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{label}, \code{sigla}.}
+\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{sigla}, \code{label}, \code{description}.}
 
 \item{label_type}{Tipo de rotulo para variaveis resposta.}
 

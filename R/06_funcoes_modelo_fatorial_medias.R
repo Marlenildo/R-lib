@@ -71,13 +71,13 @@ pinta_se_signif <- function(x) {
 # Resolver rA3tulo de variA!vel via dicionA!rio (GENA?RICO)
 #
 # - dic_vars AC DEFINIDO NO R_local
-# - Estrutura mA-nima esperada:
-#   tibble(var, label, sigla)
+# - Estrutura esperada:
+#   tibble(var, sigla, label, description)
 # ---------------------------------------------------------
 #' Resolve rotulo de variavel por dicionario
 #'
 #' @param var Nome da variavel.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param type Tipo de rotulo retornado.
 #'
 #' @return Vetor de caracteres com o rotulo resolvido.
@@ -85,7 +85,7 @@ pinta_se_signif <- function(x) {
 resolve_var_label <- function(
     var,
     dic_vars = NULL,
-    type = c("label", "sigla", "var")
+    type = c("label", "sigla", "description", "var")
 ) {
   type <- match.arg(type)
   
@@ -93,17 +93,20 @@ resolve_var_label <- function(
   if (is.null(dic_vars)) return(var)
   
   # VerificaA?A?o mA-nima de contrato
-  stopifnot(all(c("var", "label", "sigla") %in% names(dic_vars)))
+  stopifnot("var" %in% names(dic_vars))
   
   # VariA!vel fora do dicionA!rio a?' fallback
   if (!var %in% dic_vars$var) return(var)
   
   linha <- dic_vars[dic_vars$var == var, , drop = FALSE]
-  
-  if (type == "label") return(linha$label)
-  if (type == "sigla") return(linha$sigla)
-  
-  var
+
+  if (type == "var") return(var)
+  if (!type %in% names(linha)) return(var)
+
+  valor <- linha[[type]][1]
+  if (is.null(valor) || is.na(valor) || !nzchar(as.character(valor))) return(var)
+
+  as.character(valor)
 }
 
 
@@ -151,7 +154,7 @@ ajusta_modelo_fatorial <- function(
 #' @param variaveis Vetor de nomes das variaveis resposta.
 #' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
 #' @param fatores Vetor com nomes dos fatores.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo para variaveis resposta.
 #' @param formato Formato de exibicao da tabela (`qm_star`, `f_p_colunas`, `f_p_inline`).
 #' @param caption Legenda da tabela.
@@ -165,9 +168,9 @@ anova_fatorial_qm_tabela <- function(
     bloco = NULL,
     fatores,
     dic_vars = NULL,
-    label_type = c("label", "sigla", "var"),
+    label_type = c("label", "sigla", "description", "var"),
     formato = c("qm_star", "f_p_colunas", "f_p_inline"),
-    caption = "Resumo da anA!lise de variAcncia.",
+    caption = "Resumo da análise de variância.",
     digitos = 4
 ) {
   stopifnot(
@@ -297,11 +300,11 @@ anova_fatorial_qm_tabela <- function(
   } else if (formato == "f_p_inline") {
     colnames(tabela) <- c("FV", "GL", nomes_cols)
     header_top <- c(" " = 2, "F (p)" = length(variaveis))
-    nota_rodape <- "F (p) = valor do teste F com valor-p entre parAanteses."
+    nota_rodape <- "F (p) = valor do teste F com valor-p entre parênteses."
   } else {
     colnames(tabela) <- c("FV", "GL", nomes_cols)
     header_top <- c(" " = 2, "QM" = length(variaveis))
-    nota_rodape <- "QM = quadrado mACdio; * p < 0,05; ** p < 0,01; *** p < 0,001"
+    nota_rodape <- "QM = quadrado médio; * p < 0,05; ** p < 0,01; *** p < 0,001"
   }
   
   tab_html <- tabela |>
@@ -452,7 +455,7 @@ medias_fatorial_cld <- function(
 #' @param fator_interesse Nome do fator para comparacao.
 #' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
 #' @param fatores Vetor com nomes dos fatores.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo para variaveis resposta.
 #' @param caption Legenda da tabela.
 #' @param digitos Numero de casas decimais.
@@ -467,8 +470,8 @@ tabela_medias_fatorial <- function(
     bloco = NULL,
     fatores,
     dic_vars = NULL,
-    label_type = c("label", "sigla", "var"),
-    caption = "MACdias ajustadas A? erro-padrA?o.",
+    label_type = c("label", "sigla", "description", "var"),
+    caption = "Médias ajustadas ± erro-padrão.",
     digitos = 2,
     tipo_se = c("modelo", "descritivo")
 ) {
@@ -492,7 +495,7 @@ tabela_medias_fatorial <- function(
           variavel = nome_var,
           media_grupo = paste0(
             round(media, digitos),
-            " A? ",
+            " ± ",
             round(se, digitos),
             " ",
             grupo
@@ -530,7 +533,7 @@ tabela_medias_fatorial <- function(
 #' @param fator_coluna Fator para colunas.
 #' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
 #' @param fatores Vetor com nomes dos fatores.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo para variavel resposta.
 #' @param digitos Numero de casas decimais.
 #' @param alpha Nivel de significancia.
@@ -546,10 +549,10 @@ tabela_interacao_fatorial <- function(
     bloco = NULL,
     fatores,
     dic_vars = NULL,
-    label_type = c("label", "sigla", "var"),
+    label_type = c("label", "sigla", "description", "var"),
     digitos = 2,
     alpha = 0.05,
-    caption = "Desdobramento da interaA?A?o fatorial."
+    caption = "Desdobramento da interação fatorial."
 ) {
   
   stopifnot(
@@ -675,7 +678,7 @@ tabela_interacao_fatorial <- function(
 #' @param fator_coluna Fator para colunas.
 #' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
 #' @param fatores Vetor com nomes dos fatores.
-#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param dic_vars Dicionario opcional com colunas `var`, `sigla`, `label`, `description`.
 #' @param label_type Tipo de rotulo para variavel resposta.
 #' @param digitos Numero de casas decimais.
 #' @param alpha Nivel de significancia.
@@ -692,11 +695,11 @@ tabela_interacao_fatorial_multivariaveis <- function(
     bloco = NULL,
     fatores,
     dic_vars = NULL,
-    label_type = c("label", "sigla", "var"),
+    label_type = c("label", "sigla", "description", "var"),
     digitos = 2,
     alpha = 0.05,
     tipo_se = c("modelo", "descritivo"),
-    caption = "Desdobramento da interaA?A?o fatorial."
+    caption = "Desdobramento da interação fatorial."
 ) {
   
   stopifnot(
@@ -815,4 +818,5 @@ tabela_interacao_fatorial_multivariaveis <- function(
       full_width = FALSE
     )
 }
+
 

@@ -11,7 +11,7 @@ grafico_medias_fatorial(
   bloco = NULL,
   fatores,
   dic_vars = NULL,
-  label_type = c("label", "sigla", "var"),
+  label_type = c("label", "sigla", "description", "var"),
   digitos = 2
 )
 }
@@ -26,7 +26,7 @@ grafico_medias_fatorial(
 
 \item{fatores}{Vetor de nomes dos fatores do modelo.}
 
-\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{label}, \code{sigla}.}
+\item{dic_vars}{Dicionario opcional com colunas \code{var}, \code{sigla}, \code{label}, \code{description}.}
 
 \item{label_type}{Tipo de rotulo da variavel resposta.}
 
