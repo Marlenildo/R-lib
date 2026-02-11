@@ -26,6 +26,8 @@
 # ---------------------------------------------------------
 # Símbolos de significância estatística
 # ---------------------------------------------------------
+#' @keywords internal
+#' @noRd
 sig_star <- function(p) {
   if (is.na(p)) return("")
   if (p < 0.001) "***"
@@ -37,6 +39,8 @@ sig_star <- function(p) {
 # ---------------------------------------------------------
 # Formatação de p-valor
 # ---------------------------------------------------------
+#' @keywords internal
+#' @noRd
 formata_p_valor <- function(p, digitos = 4) {
   if (is.na(p)) return("")
   if (p < 10^(-digitos)) {
@@ -49,6 +53,8 @@ formata_p_valor <- function(p, digitos = 4) {
 # ---------------------------------------------------------
 # Pintar células com significância (kable)
 # ---------------------------------------------------------
+#' @keywords internal
+#' @noRd
 pinta_se_signif <- function(x) {
   ifelse(
     grepl("\\*", x),
@@ -68,6 +74,14 @@ pinta_se_signif <- function(x) {
 # - Estrutura mínima esperada:
 #   tibble(var, label, sigla)
 # ---------------------------------------------------------
+#' Resolve rotulo de variavel por dicionario
+#'
+#' @param var Nome da variavel.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param type Tipo de rotulo retornado.
+#'
+#' @return Vetor de caracteres com o rotulo resolvido.
+#' @export
 resolve_var_label <- function(
     var,
     dic_vars = NULL,
@@ -96,6 +110,15 @@ resolve_var_label <- function(
 # =========================================================
 # 1️⃣ Ajuste genérico do modelo fatorial
 # =========================================================
+#' Ajusta modelo fatorial (DIC ou DBC)
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param resposta Nome da variavel resposta.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor com nomes dos fatores.
+#'
+#' @return Objeto `aov`.
+#' @export
 ajusta_modelo_fatorial <- function(
     dados,
     resposta,
@@ -122,6 +145,20 @@ ajusta_modelo_fatorial <- function(
 # =========================================================
 # 2️⃣ Tabela de ANOVA fatorial (Quadrados Médios)
 # =========================================================
+#' Gera tabela de ANOVA fatorial
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param variaveis Vetor de nomes das variaveis resposta.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor com nomes dos fatores.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo para variaveis resposta.
+#' @param formato Formato de exibicao da tabela (`qm_star`, `f_p_colunas`, `f_p_inline`).
+#' @param caption Legenda da tabela.
+#' @param digitos Numero de casas decimais.
+#'
+#' @return Objeto `knitr_kable`.
+#' @export
 anova_fatorial_qm_tabela <- function(
     dados,
     variaveis,
@@ -144,7 +181,7 @@ anova_fatorial_qm_tabela <- function(
   colunas_usadas <- colunas_usadas[!is.null(colunas_usadas)]
   
   dados_anova <- dados |>
-    dplyr::select(all_of(colunas_usadas))
+    dplyr::select(dplyr::all_of(colunas_usadas))
   
   termo_fatores <- paste(fatores, collapse = " * ")
   
@@ -293,6 +330,8 @@ anova_fatorial_qm_tabela <- function(
 # =========================================================
 # 3️⃣ Escolha automática do teste de médias
 # =========================================================
+#' @keywords internal
+#' @noRd
 escolhe_teste_medias <- function(dados, fator) {
   stopifnot(is.character(fator))
   if (length(unique(dados[[fator]])) == 2) "t" else "tukey"
@@ -302,6 +341,8 @@ escolhe_teste_medias <- function(dados, fator) {
 # =========================================================
 # 4️⃣ Erros-padrão descritivos (simples e interação)
 # =========================================================
+#' @keywords internal
+#' @noRd
 se_descritivo <- function(dados, resposta, fator) {
   dados |>
     dplyr::group_by(.data[[fator]]) |>
@@ -312,6 +353,8 @@ se_descritivo <- function(dados, resposta, fator) {
     dplyr::select(nivel = .data[[fator]], se_desc = se)
 }
 
+#' @keywords internal
+#' @noRd
 se_descritivo_interacao <- function(
     dados,
     resposta,
@@ -338,6 +381,18 @@ se_descritivo_interacao <- function(
 # =========================================================
 # 5️⃣ Médias ajustadas + CLD
 # =========================================================
+#' Calcula medias ajustadas e grupos de comparacao
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param resposta Nome da variavel resposta.
+#' @param fator_interesse Nome do fator para comparacao.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor com nomes dos fatores.
+#' @param alpha Nivel de significancia.
+#' @param tipo_se Tipo de erro-padrao (`modelo` ou `descritivo`).
+#'
+#' @return `tibble` com niveis, medias, erro-padrao e grupos.
+#' @export
 medias_fatorial_cld <- function(
     dados,
     resposta,
@@ -390,6 +445,21 @@ medias_fatorial_cld <- function(
 # =========================================================
 # 6️⃣ Tabela final de médias fatoriais
 # =========================================================
+#' Monta tabela de medias fatoriais
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param variaveis Vetor de nomes das variaveis resposta.
+#' @param fator_interesse Nome do fator para comparacao.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor com nomes dos fatores.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo para variaveis resposta.
+#' @param caption Legenda da tabela.
+#' @param digitos Numero de casas decimais.
+#' @param tipo_se Tipo de erro-padrao (`modelo` ou `descritivo`).
+#'
+#' @return Objeto `knitr_kable`.
+#' @export
 tabela_medias_fatorial <- function(
     dados,
     variaveis,
@@ -452,6 +522,22 @@ tabela_medias_fatorial <- function(
 # Suporta dicionário externo para rotulagem da variável
 # resposta, definido no R_local.
 # ---------------------------------------------------------
+#' Tabela de desdobramento da interacao fatorial
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param resposta Nome da variavel resposta.
+#' @param fator_linha Fator para linhas.
+#' @param fator_coluna Fator para colunas.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor com nomes dos fatores.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo para variavel resposta.
+#' @param digitos Numero de casas decimais.
+#' @param alpha Nivel de significancia.
+#' @param caption Legenda da tabela.
+#'
+#' @return Objeto `knitr_kable`.
+#' @export
 tabela_interacao_fatorial <- function(
     dados,
     resposta,
@@ -584,6 +670,23 @@ tabela_interacao_fatorial <- function(
 #
 # Totalmente compatível com dicionário externo
 # ---------------------------------------------------------
+#' Desdobra interacao fatorial para varias respostas
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param variaveis Vetor de nomes das variaveis resposta.
+#' @param fator_linha Fator para linhas.
+#' @param fator_coluna Fator para colunas.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor com nomes dos fatores.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo para variavel resposta.
+#' @param digitos Numero de casas decimais.
+#' @param alpha Nivel de significancia.
+#' @param tipo_se Tipo de erro-padrao (`modelo` ou `descritivo`).
+#' @param caption Legenda da tabela.
+#'
+#' @return Objeto `knitr_kable`.
+#' @export
 tabela_interacao_fatorial_multivariaveis <- function(
     dados,
     variaveis,

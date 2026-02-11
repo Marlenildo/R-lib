@@ -21,9 +21,15 @@
 # ⚠️ Não recomendado para uso direto em ANOVA ou modelos,
 # pois pode alterar a estrutura experimental.
 # ---------------------------------------------------------
+#' Remove colunas com qualquer valor ausente
+#'
+#' @param dados `data.frame` de entrada.
+#'
+#' @return `data.frame` sem colunas que possuam `NA`.
+#' @export
 remove_colunas_com_na <- function(dados) {
   dados |>
-    dplyr::select(where(~ !any(is.na(.))))
+    dplyr::select(dplyr::where(~ !any(is.na(.))))
 }
 
 
@@ -38,9 +44,15 @@ remove_colunas_com_na <- function(dados) {
 # - auditoria do banco
 # - decidir estratégias de imputação
 # ---------------------------------------------------------
+#' Seleciona apenas colunas com algum valor ausente
+#'
+#' @param dados `data.frame` de entrada.
+#'
+#' @return `data.frame` contendo somente colunas com `NA`.
+#' @export
 seleciona_colunas_com_na <- function(dados) {
   dados |>
-    dplyr::select(where(~ any(is.na(.))))
+    dplyr::select(dplyr::where(~ any(is.na(.))))
 }
 
 
@@ -55,9 +67,15 @@ seleciona_colunas_com_na <- function(dados) {
 #
 # ✔️ Mais seguro que remove_colunas_com_na()
 # ---------------------------------------------------------
+#' Remove colunas totalmente ausentes
+#'
+#' @param dados `data.frame` de entrada.
+#'
+#' @return `data.frame` sem colunas onde todos os valores sao `NA`.
+#' @export
 remove_colunas_todas_na <- function(dados) {
   dados |>
-    dplyr::select(where(~ !all(is.na(.))))
+    dplyr::select(dplyr::where(~ !all(is.na(.))))
 }
 
 
@@ -69,6 +87,12 @@ remove_colunas_todas_na <- function(dados) {
 #
 # Útil para relatórios automáticos e logs.
 # ---------------------------------------------------------
+#' Lista nomes de colunas com valores ausentes
+#'
+#' @param dados `data.frame` de entrada.
+#'
+#' @return Vetor de caracteres com nomes de colunas contendo `NA`.
+#' @export
 colunas_com_na <- function(dados) {
   names(dados)[colSums(is.na(dados)) > 0]
 }
@@ -91,6 +115,13 @@ colunas_com_na <- function(dados) {
 # - colunas_fixas: vetor de nomes de colunas que SEMPRE
 #   devem ser mantidas (ex.: bloco, fatores, id)
 # ---------------------------------------------------------
+#' Mantem colunas fixas e colunas com valores ausentes
+#'
+#' @param dados `data.frame` de entrada.
+#' @param colunas_fixas Vetor de nomes de colunas que devem ser mantidas.
+#'
+#' @return `data.frame` filtrado pelas colunas solicitadas.
+#' @export
 manter_colunas_fixas_e_com_na <- function(dados, colunas_fixas) {
   
   stopifnot(is.character(colunas_fixas))
@@ -102,5 +133,5 @@ manter_colunas_fixas_e_com_na <- function(dados, colunas_fixas) {
   colunas_manter <- union(colunas_fixas, colunas_na)
   
   dados |>
-    dplyr::select(any_of(colunas_manter))
+    dplyr::select(dplyr::any_of(colunas_manter))
 }

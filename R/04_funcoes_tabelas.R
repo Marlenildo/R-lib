@@ -3,6 +3,13 @@
 # Funções para tabelas
 # =========================================================
 
+#' Cria tabela interativa exportavel via DataTables
+#'
+#' @param dados `data.frame` a ser exibido.
+#' @param titulo Titulo mostrado na tabela.
+#'
+#' @return Objeto `DT::datatable`.
+#' @export
 tabela_dt_exportavel <- function(
     dados,
     titulo = "Visualização dos dados"

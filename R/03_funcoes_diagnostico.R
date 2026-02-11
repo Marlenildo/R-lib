@@ -7,6 +7,22 @@
 # ✔️ Compatível com 1 ou n fatores
 # =========================================================
 
+#' Diagnostica pressupostos da ANOVA fatorial
+#'
+#' Ajusta o mesmo modelo usado na ANOVA fatorial e executa testes
+#' de normalidade (Shapiro-Wilk) e homogeneidade (Levene) para uma
+#' ou mais variaveis resposta.
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param variaveis Vetor de nomes das variaveis resposta.
+#' @param bloco Nome da coluna de blocos (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor de nomes dos fatores.
+#' @param alpha Nivel de significancia para destacas violacoes.
+#' @param mostrar_graficos Se `TRUE`, plota os graficos diagnosticos do modelo.
+#' @param caption Legenda da tabela formatada.
+#'
+#' @return Lista com `tabela` (kable formatada) e `dados_brutos` (data.frame).
+#' @export
 anova_diagnostico <- function(
     dados,
     variaveis,

@@ -1,0 +1,37 @@
+﻿Package: rlibfatorial
+Title: Analise de Experimentos Fatoriais em DIC e DBC
+Version: 0.4.0
+Authors@R: 
+    person(given = "Marlenildo",
+           family = "Ferreira Melo",
+           role = c("aut", "cre"),
+           email = "marlenildo@example.com")
+Description: Biblioteca para analise de experimentos fatoriais com suporte
+    a delineamento inteiramente casualizado (DIC) e delineamento em blocos
+    casualizados (DBC), incluindo ANOVA, diagnostico de pressupostos,
+    tabelas de medias, graficos e utilitarios para relatorios.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends: 
+    R (>= 4.1)
+Imports:
+    car,
+    dplyr,
+    DT,
+    emmeans,
+    ggplot2,
+    ggpubr,
+    htmltools,
+    kableExtra,
+    knitr,
+    multcomp,
+    purrr,
+    rlang,
+    rstatix,
+    tibble,
+    tidyr
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

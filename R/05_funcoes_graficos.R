@@ -29,6 +29,17 @@
 # Usado quando os dados já estão resumidos (mean, se),
 # normalmente após summarise().
 # =========================================================
+#' Grafico de media e erro-padrao
+#'
+#' @param dados Tabela com colunas `name`, `mean` e `se`.
+#' @param variavel Nome da variavel resposta no campo `name`.
+#' @param x_var Variavel do eixo x.
+#' @param x_label Rotulo do eixo x.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo da variavel resposta.
+#'
+#' @return Objeto `ggplot2`.
+#' @export
 grafico_media_ep <- function(
     dados,
     variavel,
@@ -47,7 +58,7 @@ grafico_media_ep <- function(
     type     = label_type
   )
   
-  ggplot(
+  ggplot2::ggplot(
     dados |> dplyr::filter(name == variavel),
     ggplot2::aes(x = {{ x_var }}, y = mean)
   ) +
@@ -63,8 +74,8 @@ grafico_media_ep <- function(
       x = x_label,
       y = y_label
     ) +
-    ggplot2::theme_bw()+
-    ggplot2::theme(panel.grid = element_blank())
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid = ggplot2::element_blank())
 }
 
 
@@ -73,6 +84,20 @@ grafico_media_ep <- function(
 #
 # Combina vários gráficos de média ± EP em um layout único
 # =========================================================
+#' Painel com multiplas variaveis resposta
+#'
+#' @param dados Tabela com dados resumidos.
+#' @param variaveis Vetor com nomes das variaveis resposta.
+#' @param x_var Variavel do eixo x.
+#' @param x_label Rotulo do eixo x.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo da variavel resposta.
+#' @param ncol Numero de colunas no painel.
+#' @param nrow Numero de linhas no painel.
+#' @param labels Se `TRUE`, adiciona letras A, B, C.
+#'
+#' @return Objeto `ggpubr::ggarrange`.
+#' @export
 grafico_multiplas_variaveis <- function(
     dados,
     variaveis,
@@ -127,6 +152,19 @@ grafico_multiplas_variaveis <- function(
 #
 # Usa o MESMO modelo da ANOVA
 # =========================================================
+#' Grafico de medias fatoriais com letras de comparacao
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param resposta Nome da variavel resposta.
+#' @param fator_interesse Nome do fator para comparacao de medias.
+#' @param bloco Nome do bloco (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor de nomes dos fatores do modelo.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo da variavel resposta.
+#' @param digitos Numero de casas decimais.
+#'
+#' @return Objeto `ggplot2`.
+#' @export
 grafico_medias_fatorial <- function(
     dados,
     resposta,
@@ -177,8 +215,8 @@ grafico_medias_fatorial <- function(
       x = fator_interesse,
       y = y_label
     ) +
-    ggplot2::theme_bw()+
-    ggplot2::theme(panel.grid = element_blank())
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid = ggplot2::element_blank())
 }
 
 
@@ -187,6 +225,20 @@ grafico_medias_fatorial <- function(
 #
 # Representa médias ajustadas para dois fatores
 # =========================================================
+#' Grafico de interacao para dois fatores
+#'
+#' @param dados `data.frame` com os dados experimentais.
+#' @param resposta Nome da variavel resposta.
+#' @param fator_x Fator no eixo x.
+#' @param fator_traco Fator representado por cor/linha.
+#' @param bloco Nome do bloco (DBC). Use `NULL` para DIC.
+#' @param fatores Vetor de nomes dos fatores do modelo.
+#' @param dic_vars Dicionario opcional com colunas `var`, `label`, `sigla`.
+#' @param label_type Tipo de rotulo da variavel resposta.
+#' @param digitos Numero de casas decimais.
+#'
+#' @return Objeto `ggplot2`.
+#' @export
 grafico_interacao_fatorial <- function(
     dados,
     resposta,
@@ -247,6 +299,6 @@ grafico_interacao_fatorial <- function(
       y     = y_label,
       color = fator_traco
     ) +
-    ggplot2::theme_bw()+
-    ggplot2::theme(panel.grid = element_blank())
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid = ggplot2::element_blank())
 }
