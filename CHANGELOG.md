@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.4] - 2026-02-12
+
+### Changed
+- Melhoria visual em `tabela_interacao_fatorial_multivariaveis()`: agrupamento por variavel com linha de separacao entre blocos usando `kableExtra::pack_rows()`.
+
 ## [0.4.3] - 2026-02-12
 
 ### Fixed

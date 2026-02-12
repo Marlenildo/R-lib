@@ -804,11 +804,20 @@ tabela_interacao_fatorial_multivariaveis <- function(
     }
   )
   
-  resultado |>
+  tabela_final <- resultado |>
     tidyr::pivot_wider(
       names_from  = dplyr::all_of(fator_coluna),
       values_from = .data$media_fmt
-    ) |>
+    )
+  
+  grupos_variavel <- rle(as.character(tabela_final$Variavel))
+  indice_grupos <- stats::setNames(
+    grupos_variavel$lengths,
+    grupos_variavel$values
+  )
+  
+  tabela_final |>
+    dplyr::select(-.data$Variavel) |>
     knitr::kable(
       caption = caption,
       escape  = FALSE
@@ -816,7 +825,8 @@ tabela_interacao_fatorial_multivariaveis <- function(
     kableExtra::kable_classic(
       html_font  = "Arial",
       full_width = FALSE
-    )
+    ) |>
+    kableExtra::pack_rows(index = indice_grupos)
 }
 
 
