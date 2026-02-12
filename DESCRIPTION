@@ -1,6 +1,6 @@
 Package: ranova
 Title: Analise De Variancia Para Experimentos Em DIC e DBC
-Version: 0.4.1
+Version: 0.4.2
 Authors@R: 
     person(given = "Marlenildo",
            family = "Ferreira Melo",
@@ -27,6 +27,7 @@ Imports:
     kableExtra,
     knitr,
     multcomp,
+    multcompView,
     purrr,
     rlang,
     rstatix,

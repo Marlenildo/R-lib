@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.2] - 2026-02-12
+
+### Fixed
+- Inclusao de `multcompView` em `Imports` no `DESCRIPTION` para garantir instalacao da dependencia requerida por comparacoes de medias/CLD.
+
 ## [0.4.1] - 2026-02-11
 
 ### Fixed
