@@ -794,7 +794,7 @@ tabela_interacao_fatorial_multivariaveis <- function(
         dplyr::mutate(
           Variavel = nome_var,
           media_fmt = paste0(
-            round(.data$emmean, digitos), " +/- ",
+            round(.data$emmean, digitos), " \u00B1 ",
             round(.data$SE, digitos), " ",
             .data$letra_lin, .data$letra_col
           )

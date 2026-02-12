@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.3] - 2026-02-12
+
+### Fixed
+- Padronizacao da exibicao de media e erro-padrao nas tabelas de medias para usar o simbolo `±` em vez de `+/-`.
+
 ## [0.4.2] - 2026-02-12
 
 ### Fixed
